@@ -4,7 +4,24 @@
   <title>Universal Studio Gifts</title>
   <style>
     body { font-family: Arial; background:#f5f5f5; margin:0; }
+
     h1 { background:black; color:white; padding:15px; text-align:center; }
+
+    .menu {
+      text-align:center;
+      margin:10px;
+    }
+
+    .menu button {
+      padding:10px;
+      margin:5px;
+      border:none;
+      background:black;
+      color:white;
+      cursor:pointer;
+      border-radius:5px;
+    }
+
     h2 { margin-left:20px; }
 
     .container {
@@ -25,7 +42,7 @@
 
     img { width:100%; border-radius:10px; }
 
-    button {
+    button.add {
       background:green;
       color:white;
       padding:8px;
@@ -33,6 +50,14 @@
       margin-top:8px;
       cursor:pointer;
       border-radius:5px;
+    }
+
+    .remove {
+      background:red;
+      margin-left:5px;
+      color:white;
+      border:none;
+      cursor:pointer;
     }
 
     #cart {
@@ -58,6 +83,15 @@
 
 <h1>Universal Studio Gifts 🎁</h1>
 
+<!-- MENU -->
+<div class="menu">
+  <button onclick="showCategory('all')">All</button>
+  <button onclick="showCategory('frames')">Frames</button>
+  <button onclick="showCategory('mugs')">Mugs</button>
+  <button onclick="showCategory('pillows')">Pillows</button>
+  <button onclick="showCategory('gifts')">Gifts</button>
+</div>
+
 <!-- CART -->
 <div id="cart">
   <h3>🛒 Cart</h3>
@@ -68,40 +102,88 @@
   <input type="text" id="address" placeholder="Address">
   <input type="text" id="pincode" placeholder="Pincode">
 
-  <button onclick="placeOrder()">Order on WhatsApp</button>
+  <button onclick="placeOrder()">Order</button>
 </div>
 
 <!-- FRAMES -->
-<h2>🖼 Frames</h2>
-<div class="container">
+<div class="category frames">
 
+<h2>🖼 Frames - Special Purpose</h2>
+<div class="container">
   <div class="card">
     <img src="https://via.placeholder.com/200">
     <h3>Wedding Frame</h3>
     <p>₹499</p>
-    <button onclick="addToCart('Wedding Frame',499)">Add</button>
+    <button class="add" onclick="addToCart('Wedding Frame',499)">Add</button>
   </div>
 
   <div class="card">
     <img src="https://via.placeholder.com/200">
-    <h3>LED Frame</h3>
-    <p>₹699</p>
-    <button onclick="addToCart('LED Frame',699)">Add</button>
+    <h3>Birthday Frame</h3>
+    <p>₹399</p>
+    <button class="add" onclick="addToCart('Birthday Frame',399)">Add</button>
   </div>
+</div>
+
+<h2>🎨 Frames - Decorative Styles</h2>
+<div class="container">
+  <div class="card">
+    <img src="https://via.placeholder.com/200">
+    <h3>Vintage Frame</h3>
+    <p>₹599</p>
+    <button class="add" onclick="addToCart('Vintage Frame',599)">Add</button>
+  </div>
+</div>
+
+<h2>🧱 Frames - Basic Types</h2>
+<div class="container">
+  <div class="card">
+    <img src="https://via.placeholder.com/200">
+    <h3>Wooden Frame</h3>
+    <p>₹299</p>
+    <button class="add" onclick="addToCart('Wooden Frame',299)">Add</button>
+  </div>
+</div>
 
 </div>
 
 <!-- MUGS -->
+<div class="category mugs">
 <h2>☕ Mugs</h2>
 <div class="container">
-
   <div class="card">
     <img src="https://via.placeholder.com/200">
     <h3>Photo Mug</h3>
     <p>₹299</p>
-    <button onclick="addToCart('Photo Mug',299)">Add</button>
+    <button class="add" onclick="addToCart('Photo Mug',299)">Add</button>
   </div>
+</div>
+</div>
 
+<!-- PILLOWS -->
+<div class="category pillows">
+<h2>🛏 Pillows</h2>
+<div class="container">
+  <div class="card">
+    <img src="https://via.placeholder.com/200">
+    <h3>Printed Pillow</h3>
+    <p>₹399</p>
+    <button class="add" onclick="addToCart('Printed Pillow',399)">Add</button>
+  </div>
+</div>
+</div>
+
+<!-- GIFTS -->
+<div class="category gifts">
+<h2>🎁 Customized Gifts</h2>
+<div class="container">
+  <div class="card">
+    <img src="https://via.placeholder.com/200">
+    <h3>Keychain</h3>
+    <p>₹199</p>
+    <button class="add" onclick="addToCart('Keychain',199)">Add</button>
+  </div>
+</div>
 </div>
 
 <script>
@@ -112,12 +194,22 @@ function addToCart(name, price){
   displayCart();
 }
 
+function removeItem(index){
+  cart.splice(index,1);
+  displayCart();
+}
+
 function displayCart(){
   let items = "";
   let total = 0;
 
-  cart.forEach(item=>{
-    items += `<p>${item.name} - ₹${item.price}</p>`;
+  cart.forEach((item,index)=>{
+    items += `
+      <p>
+        ${item.name} - ₹${item.price}
+        <button class="remove" onclick="removeItem(${index})">X</button>
+      </p>
+    `;
     total += item.price;
   });
 
@@ -150,10 +242,26 @@ Pincode: ${pincode}
 
 I will send photo for customization.`;
 
-  let phone = "916361650798";
+  let phone = "91XXXXXXXXXX"; // CHANGE THIS
 
   let url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
+}
+
+function showCategory(type){
+  let categories = document.querySelectorAll('.category');
+
+  categories.forEach(cat=>{
+    if(type === 'all'){
+      cat.style.display = 'block';
+    } else {
+      if(cat.classList.contains(type)){
+        cat.style.display = 'block';
+      } else {
+        cat.style.display = 'none';
+      }
+    }
+  });
 }
 </script>
 
