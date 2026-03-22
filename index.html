@@ -3,46 +3,53 @@
 <head>
   <title>Universal Studio Gifts</title>
   <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      background: #f5f5f5;
-    }
-
-    h1 {
-      background: #000;
-      color: #fff;
-      padding: 15px;
-    }
+    body { font-family: Arial; background:#f5f5f5; margin:0; }
+    h1 { background:black; color:white; padding:15px; text-align:center; }
+    h2 { margin-left:20px; }
 
     .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
     }
 
     .card {
-      background: #fff;
-      width: 250px;
-      margin: 15px;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background:white;
+      width:220px;
+      margin:10px;
+      padding:10px;
+      border-radius:10px;
+      box-shadow:0 0 10px rgba(0,0,0,0.1);
+      text-align:center;
     }
 
-    img {
-      width: 100%;
-      border-radius: 10px;
-    }
+    img { width:100%; border-radius:10px; }
 
     button {
-      background: green;
-      color: white;
-      padding: 10px;
-      border: none;
-      margin-top: 10px;
-      cursor: pointer;
-      border-radius: 5px;
+      background:green;
+      color:white;
+      padding:8px;
+      border:none;
+      margin-top:8px;
+      cursor:pointer;
+      border-radius:5px;
+    }
+
+    #cart {
+      position:fixed;
+      right:10px;
+      top:80px;
+      background:white;
+      padding:10px;
+      width:250px;
+      border-radius:10px;
+      box-shadow:0 0 10px rgba(0,0,0,0.2);
+    }
+
+    input {
+      width:95%;
+      margin:5px 0;
+      padding:5px;
     }
   </style>
 </head>
@@ -50,40 +57,101 @@
 <body>
 
 <h1>Universal Studio Gifts 🎁</h1>
-<p>Customized Frames & Gifts</p>
 
+<!-- CART -->
+<div id="cart">
+  <h3>🛒 Cart</h3>
+  <div id="cartItems"></div>
+  <p><b>Total: ₹<span id="total">0</span></b></p>
+
+  <input type="text" id="name" placeholder="Your Name">
+  <input type="text" id="address" placeholder="Address">
+  <input type="text" id="pincode" placeholder="Pincode">
+
+  <button onclick="placeOrder()">Order on WhatsApp</button>
+</div>
+
+<!-- FRAMES -->
+<h2>🖼 Frames</h2>
 <div class="container">
 
-  <!-- Product 1 -->
   <div class="card">
-    <img src="https://via.placeholder.com/250" alt="">
+    <img src="https://via.placeholder.com/200">
     <h3>Wedding Frame</h3>
-    <p>Code: WF01</p>
-    <button onclick="orderNow('Wedding Frame - WF01')">Order on WhatsApp</button>
+    <p>₹499</p>
+    <button onclick="addToCart('Wedding Frame',499)">Add</button>
   </div>
 
-  <!-- Product 2 -->
   <div class="card">
-    <img src="https://via.placeholder.com/250" alt="">
+    <img src="https://via.placeholder.com/200">
     <h3>LED Frame</h3>
-    <p>Code: LED01</p>
-    <button onclick="orderNow('LED Frame - LED01')">Order on WhatsApp</button>
+    <p>₹699</p>
+    <button onclick="addToCart('LED Frame',699)">Add</button>
   </div>
 
-  <!-- Product 3 -->
+</div>
+
+<!-- MUGS -->
+<h2>☕ Mugs</h2>
+<div class="container">
+
   <div class="card">
-    <img src="https://via.placeholder.com/250" alt="">
-    <h3>Vintage Frame</h3>
-    <p>Code: VT01</p>
-    <button onclick="orderNow('Vintage Frame - VT01')">Order on WhatsApp</button>
+    <img src="https://via.placeholder.com/200">
+    <h3>Photo Mug</h3>
+    <p>₹299</p>
+    <button onclick="addToCart('Photo Mug',299)">Add</button>
   </div>
 
 </div>
 
 <script>
-function orderNow(product) {
-  let phone = "917899717121"; // your number
-  let message = `Hi, I want to order:\n\n${product}\n\nMy Name:\nMy Address:\nI will send photo for customization.`;
+let cart = [];
+
+function addToCart(name, price){
+  cart.push({name, price});
+  displayCart();
+}
+
+function displayCart(){
+  let items = "";
+  let total = 0;
+
+  cart.forEach(item=>{
+    items += `<p>${item.name} - ₹${item.price}</p>`;
+    total += item.price;
+  });
+
+  document.getElementById("cartItems").innerHTML = items;
+  document.getElementById("total").innerText = total;
+}
+
+function placeOrder(){
+  let name = document.getElementById("name").value;
+  let address = document.getElementById("address").value;
+  let pincode = document.getElementById("pincode").value;
+
+  let orderId = "ORD" + Math.floor(Math.random()*10000);
+
+  let message = `Order ID: ${orderId}
+
+Products:
+`;
+
+  cart.forEach(item=>{
+    message += `- ${item.name} - ₹${item.price}\n`;
+  });
+
+  message += `
+Total: ₹${document.getElementById("total").innerText}
+
+Name: ${name}
+Address: ${address}
+Pincode: ${pincode}
+
+I will send photo for customization.`;
+
+  let phone = "91XXXXXXXXXX"; // CHANGE THIS
+
   let url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
 }
